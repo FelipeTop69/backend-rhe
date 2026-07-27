@@ -1,0 +1,19 @@
+# --- Auto-detectar archivos de texto y normalizar saltos de línea a LF ---
+* text=auto eol=lf
+
+# --- Archivos de Python ---
+*.py text diff=python
+
+# --- Archivos de configuración / texto ---
+*.json text
+*.md text
+*.txt text
+*.yml text
+*.yaml text
+
+# --- Archivos Binarios (Git no debe intentar modificar sus saltos de línea) ---
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary

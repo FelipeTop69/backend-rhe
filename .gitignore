@@ -1,0 +1,33 @@
+# --- Byte-compiled / Python Cache ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Entornos Virtuales ---
+.venv/
+venv/
+ENV/
+env/
+
+# --- Variables de Entorno y Secretos ---
+# ¡NUNCA subas credenciales, tokens o claves secretas!
+.env
+.env.local
+*.pem
+
+# --- Archivos temporales de Editores e IDEs ---
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# --- Archivos generados por pruebas y cobertura ---
+.coverage
+htmlcov/
+.pytest_cache/
+
+# --- Archivos de distribución / empaquetado ---
+dist/
+build/
+*.egg-info/
