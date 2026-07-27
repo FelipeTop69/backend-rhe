@@ -2,7 +2,7 @@ from datetime import date, time
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 # ==========================================
@@ -42,6 +42,17 @@ class ClienteBase(BaseModel):
     identificacion: str = Field(..., min_length=3, description="NIT o CC del cliente")
     nombre: str = Field(..., min_length=2, description="Nombre o razón social")
 
+    @field_validator('nombre')
+    @classmethod
+    def a_mayusculas(cls, v: str) -> str:
+        return v.upper().strip()
+
+    @field_validator('identificacion')
+    @classmethod
+    def limpiar_identificacion(cls, v: str) -> str:
+        # Si el usuario digita comas o puntos por error, los limpiamos
+        return v.replace(".", "").replace(",", "").strip()
+
 class ClienteCreate(ClienteBase):
     pass
 
@@ -59,6 +70,11 @@ class ProductoBase(BaseModel):
     codigo: str = Field(..., min_length=1, description="Código del producto")
     descripcion: str = Field(..., min_length=2, description="Descripción del producto")
     precio_base: float = Field(..., gt=0, description="Precio unitario base (mayor a 0)")
+
+    @field_validator('descripcion')
+    @classmethod
+    def a_mayusculas(cls, v: str) -> str:
+        return v.upper().strip()
 
 class ProductoCreate(ProductoBase):
     pass
