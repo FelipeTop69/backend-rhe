@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api import clientes, productos, facturas
+from app.api import clientes, productos, facturas, auth
 
 app = FastAPI(title="API RHE Facturación", version="1.0.0")
 
@@ -7,6 +7,8 @@ app = FastAPI(title="API RHE Facturación", version="1.0.0")
 app.include_router(clientes.router)
 app.include_router(productos.router)
 app.include_router(facturas.router)
+app.include_router(auth.router)
+app.include_router
 
 @app.get("/")
 def read_root():
