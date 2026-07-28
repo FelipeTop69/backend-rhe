@@ -28,6 +28,15 @@ class ConsecutivoRepository:
         db.refresh(consecutivo)
         return consecutivo
 
+    @staticmethod
+    def update(db: Session, consecutivo_obj: Consecutivo, nuevo_prefijo: str, nuevo_numero: int) -> Consecutivo:
+        """Actualiza el prefijo y el número de facturación."""
+        consecutivo_obj.prefijo = nuevo_prefijo
+        consecutivo_obj.numero_actual = nuevo_numero
+        db.commit()
+        db.refresh(consecutivo_obj)
+        return consecutivo_obj
+
 
 # ==========================================
 # 2. REPOSITORY: CLIENTE
