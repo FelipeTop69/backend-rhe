@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.schemas.schemas import ProductoCreate, ProductoResponse
 from app.repositories.crud import ProductoRepository
-from app.core.database import SessionLocal 
+from app.core.database import SessionLocal
+from typing import List
 
 router = APIRouter(prefix="/productos", tags=["Productos"])
 
@@ -12,6 +13,11 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@router.get("/", response_model=List[ProductoResponse])
+def listar_productos(db: Session = Depends(get_db)):
+    """Obtiene el catálogo completo de productos."""
+    return ProductoRepository.get_all(db)
 
 @router.post("/", response_model=ProductoResponse, status_code=status.HTTP_201_CREATED)
 def crear_producto(producto: ProductoCreate, db: Session = Depends(get_db)):

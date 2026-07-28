@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.schemas.schemas import ClienteCreate, ClienteResponse
 from app.repositories.crud import ClienteRepository
+from typing import List
 
 # Necesitamos importar tu generador de sesiones de BD (ajusta la ruta si es necesario)
 from app.core.database import SessionLocal 
@@ -15,6 +16,11 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@router.get("/", response_model=List[ClienteResponse])
+def listar_clientes(db: Session = Depends(get_db)):
+    """Obtiene la lista de todos los clientes registrados."""
+    return ClienteRepository.get_all(db)
 
 @router.post("/", response_model=ClienteResponse, status_code=status.HTTP_201_CREATED)
 def crear_cliente(cliente: ClienteCreate, db: Session = Depends(get_db)):

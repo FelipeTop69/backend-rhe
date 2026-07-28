@@ -34,6 +34,10 @@ class ConsecutivoRepository:
 # ==========================================
 class ClienteRepository:
     @staticmethod
+    def get_all(db: Session):
+        return db.query(Cliente).all()
+
+    @staticmethod
     def get_by_identificacion(db: Session, identificacion: str):
         return db.query(Cliente).filter(Cliente.identificacion == identificacion).first()
 
@@ -53,6 +57,10 @@ class ClienteRepository:
 # 3. REPOSITORY: PRODUCTO
 # ==========================================
 class ProductoRepository:
+    @staticmethod
+    def get_all(db: Session):
+        return db.query(Producto).all()
+
     @staticmethod
     def get_by_codigo(db: Session, codigo: str):
         return db.query(Producto).filter(Producto.codigo == codigo).first()
