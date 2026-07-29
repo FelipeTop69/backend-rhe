@@ -2,6 +2,10 @@ import os
 import fitz  # PyMuPDF
 from abc import ABC, abstractmethod
 from typing import Dict
+from supabase import create_client, Client # Supabase
+
+SUPABASE_URL = "https://hxsivpxspofiwclmefvo.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4c2l2cHhzcG9maXdjbG1lZnZvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTE2NzcwOCwiZXhwIjoyMTAwNzQzNzA4fQ.VBvdxnymlAsePN9NSpsRB1zlHAlikVUEjlwJPAOigtg"
 
 # ==========================================
 # 1. INTERFAZ BASE DEL PATRÓN STRATEGY
@@ -34,8 +38,9 @@ class PdfService:
     def __init__(self, base_dir: str = "assets/plantillas", output_dir: str = "assets/salidas"):
         self.base_dir = base_dir
         self.output_dir = output_dir
-        # Crear la carpeta de salidas si no existe
         os.makedirs(self.output_dir, exist_ok=True)
+        # Inicializar cliente de Supabase Storage
+        self.supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
     def _seleccionar_estrategia(self, cantidad_productos: int) -> FacturaStrategy:
         """Selecciona la estrategia (plantilla) basada en la cantidad de productos."""
@@ -154,4 +159,21 @@ class PdfService:
         doc.save(ruta_salida)
         doc.close()
 
-        return ruta_salida
+        # --- NUEVO PASO: 5. SUBIR A SUPABASE STORAGE ---
+        # Leemos el archivo PDF que acabamos de crear
+        with open(ruta_salida, "rb") as f:
+            # Subimos al bucket 'facturas' y le decimos que sobrescriba si ya existe uno con ese nombre
+            self.supabase.storage.from_("facturas").upload(
+                path=nombre_salida,
+                file=f,
+                file_options={"content-type": "application/pdf", "upsert": "true"}
+            )
+            
+        # 6. Obtener la URL pública donde quedó alojado el PDF en la nube
+        url_publica = self.supabase.storage.from_("facturas").get_public_url(nombre_salida)
+
+        # 7. Limpieza: Borramos el archivo local porque ya está seguro en la nube
+        os.remove(ruta_salida)
+
+        # Retornamos la URL de la nube en lugar de la ruta local
+        return url_publica
