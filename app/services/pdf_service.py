@@ -4,8 +4,8 @@ from abc import ABC, abstractmethod
 from typing import Dict
 from supabase import create_client, Client # Supabase
 
-SUPABASE_URL = "https://hxsivpxspofiwclmefvo.supabase.co"
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4c2l2cHhzcG9maXdjbG1lZnZvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTE2NzcwOCwiZXhwIjoyMTAwNzQzNzA4fQ.VBvdxnymlAsePN9NSpsRB1zlHAlikVUEjlwJPAOigtg"
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 # ==========================================
 # 1. INTERFAZ BASE DEL PATRÓN STRATEGY
